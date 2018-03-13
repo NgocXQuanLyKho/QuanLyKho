@@ -15,7 +15,7 @@ namespace QuanLyKho.GUI
     {
         int a;
         SqlCommand cmm;
-        string strConn = @"Data Source=NGOCXINH\SQLEXPRESS;Initial Catalog=QuanLyKho;Integrated Security=True";
+        string strConn = @"Data Source=VUONGLONG\SQLEXPRESS;Initial Catalog=QuanLyKho;Integrated Security=True";
         SqlConnection conn = new SqlConnection();
         private void LoadData()
         {
