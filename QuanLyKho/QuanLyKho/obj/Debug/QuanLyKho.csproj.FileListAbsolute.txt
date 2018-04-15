@@ -1,3 +1,4 @@
 c:\users\e6430\documents\visual studio 2012\Projects\QuanLyKho\QuanLyKho\bin\Debug\QuanLyKho.exe.config
 E:\Nhom.Github\QuanLyKho\QuanLyKho\QuanLyKho\bin\Debug\QuanLyKho.exe.config
 E:\TTNhom.Github\QuanLyKho\QuanLyKho\QuanLyKho\bin\Debug\QuanLyKho.exe.config
+E:\Github\QuanLyThuVien\QuanLyKho\QuanLyKho\QuanLyKho\bin\Debug\QuanLyKho.exe.config
