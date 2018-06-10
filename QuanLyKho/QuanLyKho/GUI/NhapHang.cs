@@ -11,35 +11,40 @@ using System.Data.SqlClient;
 
 namespace QuanLyKho.GUI
 {
-    public partial class XuatHang : Form
+    public partial class NhapHang : Form
     {
         int a;
         SqlCommand cmm;
-        string strConn = @"Data Source=VUONGLONG\SQLEXPRESS;Initial Catalog=QuanLyKho;Integrated Security=True";
+        string strConn = @"Data Source=NGOCXINH\SQLEXPRESS;Initial Catalog=QuanLyKho;Integrated Security=True";
         SqlConnection conn = new SqlConnection();
         private void LoadData()
         {
-            SqlDataAdapter da = new SqlDataAdapter("SELECT * from PhieuXuat", conn);
+            SqlDataAdapter da = new SqlDataAdapter("SELECT * from PhieuNhap", conn);
             DataTable dt = new DataTable();
             da.Fill(dt);
-            dgvXuatHang.DataSource = dt;
-            SqlDataAdapter da1 = new SqlDataAdapter("SELECT * from Chitietxuat", conn);
+            dgvNhapHang.DataSource = dt;
+            SqlDataAdapter da1 = new SqlDataAdapter("SELECT * from Chitietnhap", conn);
             DataTable dt1 = new DataTable();
             da1.Fill(dt1);
-            dgvCTXuat.DataSource = dt1;
+            dgvCTNhap.DataSource = dt1;
 
         }
-        public XuatHang()
+        public NhapHang()
         {
-            InitializeComponent();
+            InitializeComponent();          
             conn = new SqlConnection(strConn);
             conn.Open();
             LoadData();
         }
 
-        private void btnThem_Click(object sender, EventArgs e)
+        private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            cmm = new SqlCommand("select count(*) from PhieuXuat", conn);
+            
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            cmm = new SqlCommand("select count(*) from PhieuNhap", conn);
             SqlDataReader dr = cmm.ExecuteReader();
             int soluong = 0;
             if (dr.Read())
@@ -49,7 +54,7 @@ namespace QuanLyKho.GUI
             }
             for (int i = 0; i <= soluong; i++)
             {
-                txtMaPX.Text = (i + 1).ToString();
+                txtMaPN.Text = (i + 1).ToString();
             }
 
             btnLuu.Enabled = true;
@@ -87,15 +92,15 @@ namespace QuanLyKho.GUI
             {
                 case 1:
                     {
-                        cmm = new SqlCommand("select count(*) from PhieuXuat", conn);
+                        cmm = new SqlCommand("select count(*) from PhieuNhap", conn);
 
-                        SqlCommand cmd = new SqlCommand("ThemPhieuXuat", conn);
-                        cmd.CommandType = CommandType.StoredProcedure;
+                        SqlCommand cmd = new SqlCommand("ThemPhieuNhap", conn);
+                        cmd.CommandType = CommandType.StoredProcedure;                
                         SqlParameter p = new SqlParameter();
-                        p = new SqlParameter("@MaPX", txtMaPX.Text);
+                        p = new SqlParameter("@MaPN", txtMaPN.Text);
                         cmd.Parameters.Add(p);
-                        p = new SqlParameter("@NgayXuat", date1.Value.Date.ToString(""));
-                        cmd.Parameters.Add(p);
+                        p = new SqlParameter("@NgayNhap", date1.Value.Date.ToString(""));
+                        cmd.Parameters.Add(p);                        
                         int count = cmd.ExecuteNonQuery();
                         if (count > 0)
                         {
@@ -112,12 +117,12 @@ namespace QuanLyKho.GUI
                     }
                 case 2:
                     {
-                        SqlCommand cmd = new SqlCommand("SuaPhieuXuat", conn);
+                        SqlCommand cmd = new SqlCommand("SuaPhieuNhap", conn);
                         cmd.CommandType = CommandType.StoredProcedure;
                         SqlParameter p = new SqlParameter();
-                        p = new SqlParameter("@MaPX", txtMaPX.Text);
+                        p = new SqlParameter("@MaPN", txtMaPN.Text);
                         cmd.Parameters.Add(p);
-                        p = new SqlParameter("@NgayXuat", date1.Value.Date.ToString(""));
+                        p = new SqlParameter("@NgayNhap", date1.Value.Date.ToString(""));
                         cmd.Parameters.Add(p);
                         int count = cmd.ExecuteNonQuery();
                         if (count > 0)
@@ -136,16 +141,18 @@ namespace QuanLyKho.GUI
                     {
                         if (MessageBox.Show("Bạn có chắc chắn muốn xoá không?", "Thông báo", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
-                            SqlCommand cmd = new SqlCommand("XoaPhieuXuat", conn);
+                            SqlCommand cmd = new SqlCommand("XoaPhieuNhap", conn);
                             cmd.CommandType = CommandType.StoredProcedure;
-                            SqlParameter p = new SqlParameter("@MaPX", txtMaPX.Text);
+                            SqlParameter p = new SqlParameter("@MaPN", txtMaPN.Text);
                             cmd.Parameters.Add(p);
+                            
                             int count = cmd.ExecuteNonQuery();
                             if (count > 0)
                             {
                                 MessageBox.Show("Xoá thành công!");
                                 LoadData();
-                                txtMaPX.Text = "";
+                                txtMaPN.Text = "";
+                                txtTongTien.Text = "";                            
                             }
                             else
                             {
@@ -163,17 +170,21 @@ namespace QuanLyKho.GUI
 
         private void btnThem1_Click(object sender, EventArgs e)
         {
+            //cmm = new SqlCommand("select count(*) from Chitietnhap", conn);
+            //SqlDataReader dr = cmm.ExecuteReader();
             btnThem1.Enabled = false;
             btnSua1.Enabled = false;
             btnXoa1.Enabled = false;
             btnLuu1.Enabled = true;
             a = 1;
-            cbxMaCTX.Text = "";
+            cbxMaCTN.Text = "";
             txtMaHH.Text = "";
             txtSoLuong.Text = "";
             txtDonGia.Text = "";
 
+
             MessageBox.Show("Mời bạn thêm mới \n Ấn nút LƯU để lưu kết quả");
+
         }
 
         private void btnSua1_Click(object sender, EventArgs e)
@@ -202,13 +213,13 @@ namespace QuanLyKho.GUI
             {
                 case 1:
                     {
-                        cmm = new SqlCommand("select count(*) from Chitietxuat", conn);
+                        cmm = new SqlCommand("select count(*) from Chitietnhap", conn);
 
-                        SqlCommand cmd = new SqlCommand("ThemCTXuat", conn);
+                        SqlCommand cmd = new SqlCommand("ThemCTNhap", conn);
                         cmd.CommandType = CommandType.StoredProcedure;
                         SqlParameter p = new SqlParameter();
-                        p = new SqlParameter("@MaCTPX", cbxMaCTX.Text);
-                        cmd.Parameters.Add(p);                       
+                        p = new SqlParameter("@MaCTPN", cbxMaCTN.Text);
+                        cmd.Parameters.Add(p);                        
                         p = new SqlParameter("@MaHH", txtMaHH.Text);
                         cmd.Parameters.Add(p);
                         p = new SqlParameter("@SoLuong", txtSoLuong.Text);
@@ -231,10 +242,10 @@ namespace QuanLyKho.GUI
                     }
                 case 2:
                     {
-                        SqlCommand cmd = new SqlCommand("SuaCTXuat", conn);
+                        SqlCommand cmd = new SqlCommand("SuaCTNhap", conn);
                         cmd.CommandType = CommandType.StoredProcedure;
                         SqlParameter p = new SqlParameter();
-                        p = new SqlParameter("@MaCTPX", cbxMaCTX.Text);
+                        p = new SqlParameter("@MaCTPN", cbxMaCTN.Text);
                         cmd.Parameters.Add(p);                       
                         p = new SqlParameter("@MaHH", txtMaHH.Text);
                         cmd.Parameters.Add(p);
@@ -259,18 +270,18 @@ namespace QuanLyKho.GUI
                     {
                         if (MessageBox.Show("Bạn có chắc chắn muốn xoá không?", "Thông báo", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
-                            SqlCommand cmd = new SqlCommand("XoaCTXuat", conn);
+                            SqlCommand cmd = new SqlCommand("XoaCTNhap", conn);
+                            SqlParameter p = new SqlParameter();
                             cmd.CommandType = CommandType.StoredProcedure;
-                            SqlParameter p = new SqlParameter();                            
-                            p = new SqlParameter("@MaCTPX", cbxMaCTX.Text);
+                            p = new SqlParameter("@MaCTPN", cbxMaCTN.Text);
                             cmd.Parameters.Add(p);
-                            
+
                             int count = cmd.ExecuteNonQuery();
                             if (count > 0)
                             {
                                 MessageBox.Show("Xoá thành công!");
                                 LoadData();
-                                cbxMaCTX.Text = "";
+                                cbxMaCTN.Text = "";
                             }
                             else
                             {
@@ -286,49 +297,49 @@ namespace QuanLyKho.GUI
             }
         }
 
-        private void dgvXuatHang_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void dgvCTNhap_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            
+        }
+
+        private void dgvNhapHang_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
            
         }
 
-        private void dgvCTXuat_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void NhapHang_Load(object sender, EventArgs e)
         {
-           
-        }
-
-        private void XuatHang_Load(object sender, EventArgs e)
-        {
-            SqlDataAdapter da = new SqlDataAdapter("select * from PhieuXuat", conn);
+            SqlDataAdapter da = new SqlDataAdapter("select * from PhieuNhap", conn);
             DataTable dt = new DataTable();
             da.Fill(dt);
-            cbxMaCTX.DataSource = dt;
-            cbxMaCTX.DisplayMember = "maPX";
-            cbxMaCTX.ValueMember = "maPX";
+            cbxMaCTN.DataSource = dt;
+            cbxMaCTN.DisplayMember = "maPN";
+            cbxMaCTN.ValueMember = "maPN";
 
-            //dgvCTXuat.DataSource = dt;
+            //dgvCTNhap.DataSource = dt;
         }
 
-        private void cbxMaCTX_SelectedIndexChanged(object sender, EventArgs e)
+        private void cbxMaCTN_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SqlDataAdapter da = new SqlDataAdapter("select * from Chitietxuat where maPX ='" + cbxMaCTX.Text + "'", conn);
+            SqlDataAdapter da = new SqlDataAdapter("select * from Chitietnhap where maPN ='" + cbxMaCTN.Text + "' ", conn);
             DataTable dt = new DataTable();
             da.Fill(dt);
-            dgvCTXuat.DataSource = dt;
+            dgvCTNhap.DataSource = dt;
         }
 
         private void btnTK_Click(object sender, EventArgs e)
         {
-            
+           
         }
 
         private void txtTimKiem_TextChanged(object sender, EventArgs e)
         {
-           
+            
         }
 
         private void btnLamMoi_Click(object sender, EventArgs e)
         {
-            
+
         }
 
         private void txtTK_TextChanged(object sender, EventArgs e)
@@ -338,65 +349,44 @@ namespace QuanLyKho.GUI
 
         private void btnTimKiem_Click(object sender, EventArgs e)
         {
-           
+            
         }
 
         private void btnLamMoi1_Click(object sender, EventArgs e)
         {
-           
-        }
-
-        private void dgvXuatHang_CellContentClick_1(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
-            {
-                txtMaPX.Text = (dgvXuatHang.CurrentRow.Cells["maPX"].Value.ToString());
-                date1.Text = Convert.ToString(dgvXuatHang.CurrentRow.Cells["ngayXuat"].Value);
-                txtTongTien.Text = Convert.ToString(dgvXuatHang.CurrentRow.Cells["tongTien"].Value);
-            }
-        }
-
-        private void dgvCTXuat_CellContentClick_1(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
-            {
-                cbxMaCTX.Text = (dgvCTXuat.CurrentRow.Cells["maPX1"].Value.ToString());
-                txtMaHH.Text = Convert.ToString(dgvCTXuat.CurrentRow.Cells["maHH"].Value);
-                txtSoLuong.Text = Convert.ToString(dgvCTXuat.CurrentRow.Cells["soLuong"].Value);
-                txtDonGia.Text = Convert.ToString(dgvCTXuat.CurrentRow.Cells["donGia"].Value);
-            }
-        }
-
-        private void txtTimKiem_TextChanged_1(object sender, EventArgs e)
-        {
-            SqlDataAdapter da = new SqlDataAdapter("SELECT * from PhieuXuat where maPX like N'%" + txtTimKiem.Text + "%' ", conn);
-            DataTable dt = new DataTable();
-            da.Fill(dt);
-            dgvXuatHang.DataSource = dt;
-
-            SqlDataAdapter da1 = new SqlDataAdapter("SELECT * from Chitietxuat where maPX like N'%" + txtTimKiem.Text + "%' ", conn);
-            DataTable dt1 = new DataTable();
-            da1.Fill(dt1);
-            dgvCTXuat.DataSource = dt1;
+          
         }
 
         private void btnTK_Click_1(object sender, EventArgs e)
         {
-            SqlDataAdapter da = new SqlDataAdapter("SELECT * from PhieuXuat where maPX like N'%" + txtTimKiem.Text + "%' ", conn);
+            SqlDataAdapter da = new SqlDataAdapter("SELECT * from PhieuNhap where maPN like N'%" + txtTimKiem.Text + "%' ", conn);
             DataTable dt = new DataTable();
             da.Fill(dt);
-            dgvXuatHang.DataSource = dt;
+            dgvNhapHang.DataSource = dt;
 
-            SqlDataAdapter da1 = new SqlDataAdapter("SELECT * from Chitietxuat where maPX like N'%" + txtTimKiem.Text + "%' ", conn);
+            SqlDataAdapter da1 = new SqlDataAdapter("SELECT * from Chitietnhap where maPN like N'%" + txtTimKiem.Text + "%' ", conn);
             DataTable dt1 = new DataTable();
             da1.Fill(dt1);
-            dgvCTXuat.DataSource = dt1;
+            dgvCTNhap.DataSource = dt1;
+        }
+
+        private void txtTimKiem_TextChanged_1(object sender, EventArgs e)
+        {
+            SqlDataAdapter da = new SqlDataAdapter("SELECT * from PhieuNhap where maPN like N'%" + txtTimKiem.Text + "%' ", conn);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            dgvNhapHang.DataSource = dt;
+
+            SqlDataAdapter da1 = new SqlDataAdapter("SELECT * from Chitietnhap where maPN like N'%" + txtTimKiem.Text + "%' ", conn);
+            DataTable dt1 = new DataTable();
+            da1.Fill(dt1);
+            dgvCTNhap.DataSource = dt1;
         }
 
         private void btnLamMoi_Click_1(object sender, EventArgs e)
         {
             LoadData();
-            cbxMaCTX.Text = "";
+            cbxMaCTN.Text = "";
             txtSoLuong.Text = "";
             txtMaHH.Text = "";
             txtDonGia.Text = "";
@@ -412,13 +402,13 @@ namespace QuanLyKho.GUI
             btnXoa.Enabled = true;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void button1_Click_1(object sender, EventArgs e)
         {
-            cmm = new SqlCommand("select count(*) from XuatHang", conn);
-            SqlCommand cmd = new SqlCommand("LamMoiPX", conn);
+            cmm = new SqlCommand("select count(*) from NhapHang", conn);
+            SqlCommand cmd = new SqlCommand("LamMoiPN", conn);
             cmd.CommandType = CommandType.StoredProcedure;
             SqlParameter p = new SqlParameter();
-            p = new SqlParameter("@MaPX", txtMaPX.Text);
+            p = new SqlParameter("@MaPN", txtMaPN.Text);
             cmd.Parameters.Add(p);
 
             int count = cmd.ExecuteNonQuery();
@@ -433,6 +423,27 @@ namespace QuanLyKho.GUI
             btnSua.Enabled = true;
             btnLuu.Enabled = true;
             btnXoa.Enabled = true;
+        }
+
+        private void dgvCTNhap_CellContentClick_1(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+            {
+                cbxMaCTN.Text = (dgvCTNhap.CurrentRow.Cells["maPN1"].Value.ToString());
+                txtMaHH.Text = Convert.ToString(dgvCTNhap.CurrentRow.Cells["maHH"].Value);
+                txtSoLuong.Text = Convert.ToString(dgvCTNhap.CurrentRow.Cells["soLuong"].Value);
+                txtDonGia.Text = Convert.ToString(dgvCTNhap.CurrentRow.Cells["donGia"].Value);               
+            }
+        }
+
+        private void dgvNhapHang_CellContentClick_1(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+            {
+                txtMaPN.Text = (dgvNhapHang.CurrentRow.Cells["maPN"].Value.ToString());
+                date1.Text = Convert.ToString(dgvNhapHang.CurrentRow.Cells["ngayNhap"].Value);
+                txtTongTien.Text = Convert.ToString(dgvNhapHang.CurrentRow.Cells["tongTien"].Value);
+            }
         }
     }
 }
